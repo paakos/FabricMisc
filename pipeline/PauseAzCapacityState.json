@@ -60,7 +60,7 @@
 							"typeProperties": {
 								"method": "POST",
 								"url": {
-									"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}/resume?api-version=2022-07-01-preview",
+									"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}/suspend?api-version=2022-07-01-preview",
 									"type": "Expression"
 								},
 								"body": {
