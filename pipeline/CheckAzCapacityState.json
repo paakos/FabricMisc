@@ -121,6 +121,9 @@
 				"defaultValue": "capacityfabricpaakos"
 			}
 		},
+		"folder": {
+			"name": "ManageAzCapacityFabric"
+		},
 		"annotations": [],
 		"lastPublishTime": "2024-01-25T17:21:38Z"
 	},
