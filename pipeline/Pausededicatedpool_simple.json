@@ -1,6 +1,7 @@
 {
 	"name": "Pausededicatedpool_simple",
 	"properties": {
+		"description": "Based on the desired state and the current status, only the following two combinations will require a change in state: Paused->Resume or Online->Pause\nto resume : \n@concat('https://management.azure.com/subscriptions/',pipeline().parameters.SubscriptionID,'/resourceGroups/',pipeline().parameters.ResourceGroup,'/providers/Microsoft.Synapse/workspaces/',pipeline().parameters.WorkspaceName,'/sqlPools/',activity('CheckState').output.name,'/resume?api-version=2021-06-01-preview')",
 		"activities": [
 			{
 				"name": "Get_Status",
