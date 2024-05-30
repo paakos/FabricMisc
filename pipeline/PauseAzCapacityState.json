@@ -46,7 +46,7 @@
 					},
 					"ifTrueActivities": [
 						{
-							"name": "Resume Capacity",
+							"name": "Pause Capacity",
 							"type": "WebActivity",
 							"dependsOn": [],
 							"policy": {
