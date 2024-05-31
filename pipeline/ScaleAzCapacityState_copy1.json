@@ -41,12 +41,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('Get Capacity Info').output.properties.state,'Active')",
+						"value": "@equals(activity('Get Capacity Size').output.properties.state,'Active')",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
 						{
-							"name": "Pause Capacity",
+							"name": "Change Size",
 							"type": "WebActivity",
 							"dependsOn": [],
 							"policy": {
@@ -58,13 +58,13 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"method": "POST",
+								"method": "PATCH",
 								"url": {
-									"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}/suspend?api-version=2022-07-01-preview",
+									"value": "@concat('/subscriptions/', pipeline().parameters.subscription, '/resourceGroups/', pipeline().parameters.resourcegroup, '/providers/Microsoft.Fabric/capacities/', pipeline().parameters.capacitysize, '?api-version=2022–07–01-preview')\n",
 									"type": "Expression"
 								},
 								"body": {
-									"value": "{\"Starting\":\"Capacity\"}",
+									"value": "@json(concat('{\"sku\":{\"name\":\"',pipeline().parameters.capacitysize,'\",\"tier\":\"Fabric\"}}'))",
 									"type": "Expression"
 								},
 								"authentication": {
@@ -91,7 +91,8 @@
 				"defaultValue": "capacityfabricpaakos"
 			},
 			"capacitysize": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "F32"
 			}
 		},
 		"folder": {
