@@ -60,7 +60,7 @@
 							"typeProperties": {
 								"method": "PATCH",
 								"url": {
-									"value": "@concat('/subscriptions/', pipeline().parameters.subscription, '/resourceGroups/', pipeline().parameters.resourcegroup, '/providers/Microsoft.Fabric/capacities/', pipeline().parameters.capacitysize, '?api-version=2022–07–01-preview')\n",
+									"value": "@concat('/subscriptions/', pipeline().parameters.subscription, '/resourceGroups/', pipeline().parameters.resourcegroup, '/providers/Microsoft.Fabric/capacities/', pipeline().parameters.capacity, '?api-version=2022–07–01-preview')",
 									"type": "Expression"
 								},
 								"body": {
