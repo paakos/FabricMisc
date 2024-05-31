@@ -59,12 +59,15 @@
 							"userProperties": [],
 							"typeProperties": {
 								"method": "PATCH",
+								"headers": {
+									"Content-Type": "application/json"
+								},
 								"url": {
 									"value": "@concat('/subscriptions/', pipeline().parameters.subscription, '/resourceGroups/', pipeline().parameters.resourcegroup, '/providers/Microsoft.Fabric/capacities/', pipeline().parameters.capacity, '?api-version=2022–07–01-preview')",
 									"type": "Expression"
 								},
 								"body": {
-									"value": "@json(concat('{\"sku\":{\"name\":\"',pipeline().parameters.capacitysize,'\",\"tier\":\"Fabric\"}}'))",
+									"value": "@json(concat('{\"sku\":{\"name\":\"',pipeline().parameters.sku,'\",\"tier\":\"Fabric\"}}'))",
 									"type": "Expression"
 								},
 								"authentication": {
@@ -90,7 +93,7 @@
 				"type": "string",
 				"defaultValue": "capacityfabricpaakos"
 			},
-			"capacitysize": {
+			"sku": {
 				"type": "string",
 				"defaultValue": "F32"
 			}
