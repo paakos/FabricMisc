@@ -21,7 +21,7 @@
 						"type": "Expression"
 					},
 					"body": {
-						"value": "{\n  \"sku\": {\n    \"name\": \"@{pipeline().parameters.sku}\"\n  }\n}",
+						"value": "{\"sku\":{\"name\":\"@{pipeline().parameters.sku}\"}}",
 						"type": "Expression"
 					},
 					"authentication": {
