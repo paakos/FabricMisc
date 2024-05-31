@@ -1,10 +1,10 @@
 {
-	"name": "CheckAzCapacityState",
+	"name": "ScaleAzCapacityState_copy1",
 	"properties": {
 		"description": "Start or Stop capacity ",
 		"activities": [
 			{
-				"name": "Get Capacity Info",
+				"name": "Get Capacity Size",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
@@ -32,7 +32,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Get Capacity Info",
+						"activity": "Get Capacity Size",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -41,10 +41,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('Get Capacity Info').output.sku.name,'F64')",
+						"value": "@equals(activity('Get Capacity Info').output.properties.state,'Active')",
 						"type": "Expression"
 					},
-					"ifFalseActivities": [
+					"ifTrueActivities": [
 						{
 							"name": "Pause Capacity",
 							"type": "WebActivity",
@@ -61,36 +61,6 @@
 								"method": "POST",
 								"url": {
 									"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}/suspend?api-version=2022-07-01-preview",
-									"type": "Expression"
-								},
-								"body": {
-									"value": "{\"Pausing\":\"Capacity\"}",
-									"type": "Expression"
-								},
-								"authentication": {
-									"type": "MSI",
-									"resource": "https://management.azure.com"
-								}
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "Resume Capacity",
-							"type": "WebActivity",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"method": "POST",
-								"url": {
-									"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}/resume?api-version=2022-07-01-preview",
 									"type": "Expression"
 								},
 								"body": {
@@ -119,6 +89,9 @@
 			"capacity": {
 				"type": "string",
 				"defaultValue": "capacityfabricpaakos"
+			},
+			"capacitysize": {
+				"type": "string"
 			}
 		},
 		"folder": {
