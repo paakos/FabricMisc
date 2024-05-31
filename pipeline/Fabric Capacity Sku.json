@@ -16,12 +16,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "PATCH",
+					"headers": {
+						"Content-Type": "application/json"
+					},
 					"url": {
 						"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subsciptionId}/resourceGroups/@{pipeline().parameters.resourceGroupName}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.dedicatedCapacityName}?api-version=@{variables('apiVersion')}",
 						"type": "Expression"
 					},
 					"body": {
-						"value": "{\"sku\":{\"name\":\"@{pipeline().parameters.sku}\"}}",
+						"value": "@json(concat('{\"sku\":{\"name\":\"',pipeline().parameters.sku,'\",\"tier\":\"Fabric\"}}'))\n",
 						"type": "Expression"
 					},
 					"authentication": {
