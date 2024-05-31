@@ -1,6 +1,7 @@
 {
 	"name": "Fabric Capacity Sku",
 	"properties": {
+		"description": "FAlta validar por que no autoriza la operacion de cambio de tier \n",
 		"activities": [
 			{
 				"name": "Fabric Capacity Sku",
