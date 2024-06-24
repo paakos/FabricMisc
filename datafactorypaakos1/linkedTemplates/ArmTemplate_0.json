@@ -208,7 +208,7 @@
 					},
 					"sku": {
 						"type": "string",
-						"defaultValue": "F2"
+						"defaultValue": "F64"
 					}
 				},
 				"variables": {
