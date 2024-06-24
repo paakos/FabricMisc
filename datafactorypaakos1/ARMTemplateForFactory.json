@@ -58,7 +58,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@equals(activity('Get Capacity Info').output.properties.state,'Paused')",
+								"value": "@equals(activity('Get Capacity Info').output.sku.name,'F64')",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
@@ -148,6 +148,80 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2024-01-25T17:21:38Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Fabric Capacity Sku')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "FAlta validar por que no autoriza la operacion de cambio de tier \n",
+				"activities": [
+					{
+						"name": "Fabric Capacity Sku",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "PATCH",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"url": {
+								"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subsciptionId}/resourceGroups/@{pipeline().parameters.resourceGroupName}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.dedicatedCapacityName}?api-version=@{variables('apiVersion')}",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@json(concat('{\"sku\":{\"name\":\"',pipeline().parameters.sku,'\",\"tier\":\"Fabric\"}}'))\n",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://management.azure.com"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"subsciptionId": {
+						"type": "string",
+						"defaultValue": "9c655958-f8a7-4cb4-975d-2e65bfab228e"
+					},
+					"resourceGroupName": {
+						"type": "string",
+						"defaultValue": "fabrickpaakos"
+					},
+					"dedicatedCapacityName": {
+						"type": "string",
+						"defaultValue": "capacityfabricpaakos"
+					},
+					"sku": {
+						"type": "string",
+						"defaultValue": "F2"
+					}
+				},
+				"variables": {
+					"apiVersion": {
+						"type": "String",
+						"defaultValue": "2022-07-01-preview"
+					}
+				},
+				"folder": {
+					"name": "ManageAzCapacityFabric"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-06-03T19:41:08Z"
 			},
 			"dependsOn": []
 		},
@@ -476,6 +550,159 @@
 				"lastPublishTime": "2024-01-25T17:21:38Z"
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ScaleAzCapacityState_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Start or Stop capacity ",
+				"activities": [
+					{
+						"name": "Get Capacity Size",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": {
+								"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}?api-version=2022-07-01-preview",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://management.azure.com"
+							}
+						}
+					},
+					{
+						"name": "Check if Paused",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Capacity Size",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('Get Capacity Size').output.properties.state,'Active')",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Change Size",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "PATCH",
+										"headers": {
+											"Content-Type": "application/json"
+										},
+										"url": {
+											"value": "@concat('/subscriptions/', pipeline().parameters.subscription, '/resourceGroups/', pipeline().parameters.resourcegroup, '/providers/Microsoft.Fabric/capacities/', pipeline().parameters.capacity, '?api-version=2022–07–01-preview')",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "@json(concat('{\"sku\":{\"name\":\"',pipeline().parameters.sku,'\",\"tier\":\"Fabric\"}}'))",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "MSI",
+											"resource": "https://management.azure.com"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"subscription": {
+						"type": "string",
+						"defaultValue": "9c655958-f8a7-4cb4-975d-2e65bfab228e"
+					},
+					"resourcegroup": {
+						"type": "string",
+						"defaultValue": "fabrickpaakos"
+					},
+					"capacity": {
+						"type": "string",
+						"defaultValue": "capacityfabricpaakos"
+					},
+					"sku": {
+						"type": "string",
+						"defaultValue": "F32"
+					}
+				},
+				"folder": {
+					"name": "ManageAzCapacityFabric"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-25T17:21:38Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/daily')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "include params",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PauseAzCapacityState",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2024-06-24T14:12:00",
+						"timeZone": "Romance Standard Time",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								18
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PauseAzCapacityState')]"
+			]
 		}
 	]
 }
