@@ -1,6 +1,7 @@
 {
 	"name": "daily",
 	"properties": {
+		"description": "include params",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
