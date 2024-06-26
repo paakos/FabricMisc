@@ -28,7 +28,7 @@
 				}
 			},
 			{
-				"name": "Check if Paused",
+				"name": "Check if Active",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
