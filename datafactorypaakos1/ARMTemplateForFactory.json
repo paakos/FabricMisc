@@ -258,7 +258,7 @@
 						}
 					},
 					{
-						"name": "Check if Paused",
+						"name": "Check if Active",
 						"type": "IfCondition",
 						"dependsOn": [
 							{
@@ -703,6 +703,29 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/PauseAzCapacityState')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/waitpipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 5
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
 		}
 	]
 }
