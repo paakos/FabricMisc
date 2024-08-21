@@ -1,0 +1,61 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSynapseAnalyticsTable1",
+						"type": "DatasetReference"
+					},
+					"name": "fromsynapseSales1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "fecha"
+				},
+				{
+					"name": "addcurrentdate"
+				},
+				{
+					"name": "surrogateKey1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          OnlineSalesKey as integer,",
+				"          OrderDate as timestamp,",
+				"          DeliveryDate as timestamp,",
+				"          StoreKey as integer,",
+				"          ProductKey as integer,",
+				"          PromotionKey as integer,",
+				"          CustomerKey as integer,",
+				"          SalesOrderNumber as string,",
+				"          SalesOrderLineNumber as integer,",
+				"          SalesQuantity as integer,",
+				"          SalesAmount as decimal(38,18),",
+				"          ReturnQuantity as integer,",
+				"          ReturnAmount as decimal(38,18),",
+				"          DiscountQuantity as integer,",
+				"          DiscountAmount as decimal(38,18),",
+				"          TotalCost as decimal(38,18),",
+				"          UnitCost as decimal(38,18),",
+				"          UnitPrice as decimal(38,18)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table',",
+				"     staged: true) ~> fromsynapseSales1",
+				"fromsynapseSales1 derive(Fecha = currentDate()) ~> fecha",
+				"fecha derive(dayofmonth = currentTimestamp()) ~> addcurrentdate",
+				"addcurrentdate keyGenerate(output(alternateProductkey as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1"
+			]
+		}
+	}
+}
