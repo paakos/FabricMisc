@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "generate data",
-				"type": "ExecuteDataFlow",
+				"name": "Copy data1",
+				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -15,16 +15,249 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataflow": {
-						"referenceName": "dataflow1",
-						"type": "DataFlowReference"
+					"source": {
+						"type": "SqlDWSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
-					"compute": {
-						"coreCount": 16,
-						"computeType": "General"
+					"sink": {
+						"type": "OracleSink",
+						"writeBatchSize": 10000
 					},
-					"traceLevel": "Fine"
-				}
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "OnlineSalesKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ONLINESALESKEY",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "OrderDate",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								},
+								"sink": {
+									"name": "ORDERDATE",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "DeliveryDate",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								},
+								"sink": {
+									"name": "DELIVERYDATE",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "StoreKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "STOREKEY",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "ProductKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "PRODUCTKEY",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "PromotionKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "PROMOTIONKEY",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "CUSTOMERKEY",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "SalesOrderNumber",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "SALESORDERNUMBER",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SalesOrderLineNumber",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "SALESORDERLINENUMBER",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "SalesQuantity",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "SALESQUANTITY",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "SalesAmount",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 18,
+									"precision": 38
+								},
+								"sink": {
+									"name": "SALESAMOUNT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ReturnQuantity",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "RETURNQUANTITY",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "ReturnAmount",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 18,
+									"precision": 38
+								},
+								"sink": {
+									"name": "RETURNAMOUNT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DiscountQuantity",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "DISCOUNTQUANTITY",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"name": "DiscountAmount",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 18,
+									"precision": 38
+								},
+								"sink": {
+									"name": "DISCOUNTAMOUNT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TotalCost",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 18,
+									"precision": 38
+								},
+								"sink": {
+									"name": "TOTALCOST",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "UnitCost",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 18,
+									"precision": 38
+								},
+								"sink": {
+									"name": "UNITCOST",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "UnitPrice",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 18,
+									"precision": 38
+								},
+								"sink": {
+									"name": "UNITPRICE",
+									"type": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSynapseAnalyticsTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "OracleTable1",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"annotations": []
