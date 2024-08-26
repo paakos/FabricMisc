@@ -1,0 +1,1239 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "weadfpaakos01"
+		},
+		"AzureSynapseAnalytics1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics1'"
+		},
+		"Oracle1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Oracle1'"
+		},
+		"Oracle2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Oracle2'"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "wesynapsepaakos01.sql.azuresynapse.net"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "sqlpool2"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladminuser"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/CheckAzCapacityState')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Start or Stop capacity ",
+				"activities": [
+					{
+						"name": "Get Capacity Info",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": {
+								"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}?api-version=2022-07-01-preview",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://management.azure.com"
+							}
+						}
+					},
+					{
+						"name": "Check if Paused",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Capacity Info",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('Get Capacity Info').output.sku.name,'F64')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Pause Capacity",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "POST",
+										"headers": {},
+										"url": {
+											"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}/suspend?api-version=2022-07-01-preview",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "{\"Pausing\":\"Capacity\"}",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "MSI",
+											"resource": "https://management.azure.com"
+										}
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "Resume Capacity",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "POST",
+										"headers": {},
+										"url": {
+											"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}/resume?api-version=2022-07-01-preview",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "{\"Starting\":\"Capacity\"}",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "MSI",
+											"resource": "https://management.azure.com"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"subscription": {
+						"type": "string",
+						"defaultValue": "9c655958-f8a7-4cb4-975d-2e65bfab228e"
+					},
+					"resourcegroup": {
+						"type": "string",
+						"defaultValue": "fabrickpaakos"
+					},
+					"capacity": {
+						"type": "string",
+						"defaultValue": "capacityfabricpaakos"
+					}
+				},
+				"folder": {
+					"name": "ManageAzCapacityFabric"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-25T17:21:38Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Fabric Capacity Sku')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "FAlta validar por que no autoriza la operacion de cambio de tier \n",
+				"activities": [
+					{
+						"name": "Fabric Capacity Sku",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "PATCH",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"url": {
+								"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subsciptionId}/resourceGroups/@{pipeline().parameters.resourceGroupName}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.dedicatedCapacityName}?api-version=@{variables('apiVersion')}",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@json(concat('{\"sku\":{\"name\":\"',pipeline().parameters.sku,'\",\"tier\":\"Fabric\"}}'))\n",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://management.azure.com"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"subsciptionId": {
+						"type": "string",
+						"defaultValue": "9c655958-f8a7-4cb4-975d-2e65bfab228e"
+					},
+					"resourceGroupName": {
+						"type": "string",
+						"defaultValue": "fabrickpaakos"
+					},
+					"dedicatedCapacityName": {
+						"type": "string",
+						"defaultValue": "capacityfabricpaakos"
+					},
+					"sku": {
+						"type": "string",
+						"defaultValue": "F64"
+					}
+				},
+				"variables": {
+					"apiVersion": {
+						"type": "String",
+						"defaultValue": "2022-07-01-preview"
+					}
+				},
+				"folder": {
+					"name": "ManageAzCapacityFabric"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-06-03T19:41:08Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PauseAzCapacityState')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Start or Stop capacity ",
+				"activities": [
+					{
+						"name": "Get Capacity Info",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": {
+								"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}?api-version=2022-07-01-preview",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://management.azure.com"
+							}
+						}
+					},
+					{
+						"name": "Check if Active",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Capacity Info",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('Get Capacity Info').output.properties.state,'Active')",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Pause Capacity",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "POST",
+										"headers": {},
+										"url": {
+											"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}/suspend?api-version=2022-07-01-preview",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "{\"Starting\":\"Capacity\"}",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "MSI",
+											"resource": "https://management.azure.com"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"subscription": {
+						"type": "string",
+						"defaultValue": "9c655958-f8a7-4cb4-975d-2e65bfab228e"
+					},
+					"resourcegroup": {
+						"type": "string",
+						"defaultValue": "fabrickpaakos"
+					},
+					"capacity": {
+						"type": "string",
+						"defaultValue": "capacityfabricpaakos"
+					}
+				},
+				"folder": {
+					"name": "ManageAzCapacityFabric"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-25T17:21:38Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pausededicatedpool_simple')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Based on the desired state and the current status, only the following two combinations will require a change in state: Paused->Resume or Online->Pause\nto resume : \n@concat('https://management.azure.com/subscriptions/',pipeline().parameters.SubscriptionID,'/resourceGroups/',pipeline().parameters.ResourceGroup,'/providers/Microsoft.Synapse/workspaces/',pipeline().parameters.WorkspaceName,'/sqlPools/',activity('CheckState').output.name,'/resume?api-version=2021-06-01-preview')",
+				"activities": [
+					{
+						"name": "Get_Status",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": {
+								"value": "@concat('https://management.azure.com/subscriptions/',pipeline().parameters.SubscriptionID,'/resourceGroups/',pipeline().parameters.ResourceGroup,'/providers/Microsoft.Synapse/workspaces/',pipeline().parameters.WorkspaceName,'/sqlPools/',pipeline().parameters.SQLPoolName,'?api-version=2021-06-01-preview')",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://management.azure.com/"
+							}
+						}
+					},
+					{
+						"name": "Check if running",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get_Status",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('Get_Status').output.properties.status,'Active')",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Pause",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {},
+										"url": {
+											"value": "@concat('https://management.azure.com/subscriptions/',pipeline().parameters.SubscriptionID,'/resourceGroups/',pipeline().parameters.ResourceGroup,'/providers/Microsoft.Synapse/workspaces/',pipeline().parameters.WorkspaceName,'/sqlPools/',activity('Get_Status').output.name,'/pause?api-version=2021-06-01-preview')",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "MSI",
+											"resource": "https://management.azure.com"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"ResourceGroup": {
+						"type": "string",
+						"defaultValue": "paakossynapserg"
+					},
+					"SubscriptionID": {
+						"type": "string",
+						"defaultValue": "96baafb0-41f2-4142-aaee-7bbb880d40f9"
+					},
+					"WorkspaceName": {
+						"type": "string",
+						"defaultValue": "paakossynapse"
+					},
+					"SQLPoolName": {
+						"type": "string",
+						"defaultValue": "paaokssqlpool"
+					},
+					"PauseorResume": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "ManageAzureSynapseAnalytics"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ResumeAzCapacityState')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Start or Stop capacity ",
+				"activities": [
+					{
+						"name": "Get Capacity Info",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": {
+								"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}?api-version=2022-07-01-preview",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://management.azure.com"
+							}
+						}
+					},
+					{
+						"name": "Check if Paused",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Capacity Info",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('Get Capacity Info').output.properties.state,'Paused')",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Resume Capacity",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "POST",
+										"headers": {},
+										"url": {
+											"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}/resume?api-version=2022-07-01-preview",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "{\"Starting\":\"Capacity\"}",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "MSI",
+											"resource": "https://management.azure.com"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"subscription": {
+						"type": "string",
+						"defaultValue": "9c655958-f8a7-4cb4-975d-2e65bfab228e"
+					},
+					"resourcegroup": {
+						"type": "string",
+						"defaultValue": "fabrickpaakos"
+					},
+					"capacity": {
+						"type": "string",
+						"defaultValue": "capacityfabricpaakos"
+					}
+				},
+				"folder": {
+					"name": "ManageAzCapacityFabric"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-25T17:21:38Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ScaleAzCapacityState_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Start or Stop capacity ",
+				"activities": [
+					{
+						"name": "Get Capacity Size",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": {
+								"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/resourceGroups/@{pipeline().parameters.resourcegroup}/providers/Microsoft.Fabric/capacities/@{pipeline().parameters.capacity}?api-version=2022-07-01-preview",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://management.azure.com"
+							}
+						}
+					},
+					{
+						"name": "Check if Paused",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Capacity Size",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('Get Capacity Size').output.properties.state,'Active')",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Change Size",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "PATCH",
+										"headers": {
+											"Content-Type": "application/json"
+										},
+										"url": {
+											"value": "@concat('/subscriptions/', pipeline().parameters.subscription, '/resourceGroups/', pipeline().parameters.resourcegroup, '/providers/Microsoft.Fabric/capacities/', pipeline().parameters.capacity, '?api-version=2022–07–01-preview')",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "@json(concat('{\"sku\":{\"name\":\"',pipeline().parameters.sku,'\",\"tier\":\"Fabric\"}}'))",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "MSI",
+											"resource": "https://management.azure.com"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"subscription": {
+						"type": "string",
+						"defaultValue": "9c655958-f8a7-4cb4-975d-2e65bfab228e"
+					},
+					"resourcegroup": {
+						"type": "string",
+						"defaultValue": "fabrickpaakos"
+					},
+					"capacity": {
+						"type": "string",
+						"defaultValue": "capacityfabricpaakos"
+					},
+					"sku": {
+						"type": "string",
+						"defaultValue": "F32"
+					}
+				},
+				"folder": {
+					"name": "ManageAzCapacityFabric"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-25T17:21:38Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/waitpipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 5
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"server": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSynapseAnalytics1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/azureshir4oracle')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/daily')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "include params",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PauseAzCapacityState",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2024-06-24T14:12:00",
+						"timeZone": "Romance Standard Time",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								18
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PauseAzCapacityState')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "OnlineSalesKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OrderDate",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "DeliveryDate",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "StoreKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PromotionKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CustomerKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SalesOrderNumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SalesOrderLineNumber",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SalesQuantity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SalesAmount",
+						"type": "decimal",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "ReturnQuantity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ReturnAmount",
+						"type": "decimal",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "DiscountQuantity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DiscountAmount",
+						"type": "decimal",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "TotalCost",
+						"type": "decimal",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "UnitCost",
+						"type": "decimal",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "UnitPrice",
+						"type": "decimal",
+						"precision": 38,
+						"scale": 18
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Sales1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Oracle1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "Oracle",
+				"typeProperties": {
+					"connectionString": "[parameters('Oracle1_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "azureshir4oracle",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/azureshir4oracle')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Oracle2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "Oracle",
+				"typeProperties": {
+					"connectionString": "[parameters('Oracle2_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "azureshir4oracle",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/azureshir4oracle')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OracleTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Oracle2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "OracleTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "SYSTEM",
+					"table": "SALES1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Oracle2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/populateOracle1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlDWSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "OracleSink",
+								"writeBatchSize": 10000
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "OnlineSalesKey",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ONLINESALESKEY",
+											"type": "Double"
+										}
+									},
+									{
+										"source": {
+											"name": "OrderDate",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										},
+										"sink": {
+											"name": "ORDERDATE",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "DeliveryDate",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										},
+										"sink": {
+											"name": "DELIVERYDATE",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "StoreKey",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "STOREKEY",
+											"type": "Double"
+										}
+									},
+									{
+										"source": {
+											"name": "ProductKey",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "PRODUCTKEY",
+											"type": "Double"
+										}
+									},
+									{
+										"source": {
+											"name": "PromotionKey",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "PROMOTIONKEY",
+											"type": "Double"
+										}
+									},
+									{
+										"source": {
+											"name": "CustomerKey",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "CUSTOMERKEY",
+											"type": "Double"
+										}
+									},
+									{
+										"source": {
+											"name": "SalesOrderNumber",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "SALESORDERNUMBER",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SalesOrderLineNumber",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "SALESORDERLINENUMBER",
+											"type": "Double"
+										}
+									},
+									{
+										"source": {
+											"name": "SalesQuantity",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "SALESQUANTITY",
+											"type": "Double"
+										}
+									},
+									{
+										"source": {
+											"name": "SalesAmount",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 18,
+											"precision": 38
+										},
+										"sink": {
+											"name": "SALESAMOUNT",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ReturnQuantity",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "RETURNQUANTITY",
+											"type": "Double"
+										}
+									},
+									{
+										"source": {
+											"name": "ReturnAmount",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 18,
+											"precision": 38
+										},
+										"sink": {
+											"name": "RETURNAMOUNT",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DiscountQuantity",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "DISCOUNTQUANTITY",
+											"type": "Double"
+										}
+									},
+									{
+										"source": {
+											"name": "DiscountAmount",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 18,
+											"precision": 38
+										},
+										"sink": {
+											"name": "DISCOUNTAMOUNT",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalCost",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 18,
+											"precision": 38
+										},
+										"sink": {
+											"name": "TOTALCOST",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "UnitCost",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 18,
+											"precision": 38
+										},
+										"sink": {
+											"name": "UNITCOST",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPrice",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 18,
+											"precision": 38
+										},
+										"sink": {
+											"name": "UNITPRICE",
+											"type": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSynapseAnalyticsTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "OracleTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSynapseAnalyticsTable1')]",
+				"[concat(variables('factoryId'), '/datasets/OracleTable1')]"
+			]
+		}
+	]
+}
