@@ -1,0 +1,16 @@
+{
+	"name": "Oracle2",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Oracle",
+		"typeProperties": {
+			"connectionString": "host=4.223.225.126;port=1521;sid=Oratest1;user id=system",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3NjkwZjBjMi05MGVjLTQyY2MtYjcxZS0yNTQyZDBlZjVlNDYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "azureshir4oracle",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
