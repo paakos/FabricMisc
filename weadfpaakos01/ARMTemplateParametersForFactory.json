@@ -22,6 +22,33 @@
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
 			"value": "sqladminuser"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_subscription": {
+			"value": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"value": "swedfabricrg01"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_capacity": {
+			"value": "swedcefabric01"
+		},
+		"spaintr_properties_PauseAzCapacityState_parameters_subscription": {
+			"value": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+		},
+		"spaintr_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"value": "spaingcentralfabricrg"
+		},
+		"spaintr_properties_PauseAzCapacityState_parameters_capacity": {
+			"value": "spcfabricpaakos01"
+		},
+		"wetri_properties_PauseAzCapacityState_parameters_subscription": {
+			"value": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+		},
+		"wetri_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"value": "wefabricrg01"
+		},
+		"wetri_properties_PauseAzCapacityState_parameters_capacity": {
+			"value": "wefabricpaakos01"
 		}
 	}
 }
