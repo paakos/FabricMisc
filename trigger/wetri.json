@@ -1,0 +1,37 @@
+{
+	"name": "wetri",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PauseAzCapacityState",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"subscription": "cbb0b01f-f99e-4890-891a-c1dccc5563e8",
+					"resourcegroup": "wefabricrg01",
+					"capacity": "wefabricpaakos01"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2025-01-28T09:46:00",
+				"timeZone": "Romance Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						18
+					]
+				}
+			}
+		}
+	}
+}
