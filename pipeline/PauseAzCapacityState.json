@@ -80,15 +80,15 @@
 		"parameters": {
 			"subscription": {
 				"type": "string",
-				"defaultValue": "9c655958-f8a7-4cb4-975d-2e65bfab228e"
+				"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
 			},
 			"resourcegroup": {
 				"type": "string",
-				"defaultValue": "fabrickpaakos"
+				"defaultValue": "swedfabricrg01"
 			},
 			"capacity": {
 				"type": "string",
-				"defaultValue": "capacityfabricpaakos"
+				"defaultValue": "swedcefabric01"
 			}
 		},
 		"folder": {
