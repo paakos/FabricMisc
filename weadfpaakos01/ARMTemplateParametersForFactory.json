@@ -23,14 +23,14 @@
 		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
 			"value": "sqladminuser"
 		},
-		"swedenInstance_properties_PauseAzCapacityState_parameters_subscription": {
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_subscription": {
 			"value": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
 		},
-		"swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup": {
-			"value": "swedfabricrg01"
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"value": "fabriccapacitywestus2"
 		},
-		"swedenInstance_properties_PauseAzCapacityState_parameters_capacity": {
-			"value": "swedcefabric01"
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_capacity": {
+			"value": "westus2fabriccapacity"
 		},
 		"spaintr_properties_PauseAzCapacityState_parameters_subscription": {
 			"value": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
@@ -40,6 +40,15 @@
 		},
 		"spaintr_properties_PauseAzCapacityState_parameters_capacity": {
 			"value": "spcfabricpaakos01"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_subscription": {
+			"value": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"value": "swedfabricrg01"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_capacity": {
+			"value": "swedcefabric01"
 		},
 		"wetri_properties_PauseAzCapacityState_parameters_subscription": {
 			"value": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"

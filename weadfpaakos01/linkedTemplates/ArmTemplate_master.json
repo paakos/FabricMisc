@@ -31,17 +31,17 @@
 			"type": "string",
 			"defaultValue": "sqladminuser"
 		},
-		"swedenInstance_properties_PauseAzCapacityState_parameters_subscription": {
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_subscription": {
 			"type": "string",
 			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
 		},
-		"swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup": {
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_resourcegroup": {
 			"type": "string",
-			"defaultValue": "swedfabricrg01"
+			"defaultValue": "fabriccapacitywestus2"
 		},
-		"swedenInstance_properties_PauseAzCapacityState_parameters_capacity": {
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_capacity": {
 			"type": "string",
-			"defaultValue": "swedcefabric01"
+			"defaultValue": "westus2fabriccapacity"
 		},
 		"spaintr_properties_PauseAzCapacityState_parameters_subscription": {
 			"type": "string",
@@ -54,6 +54,18 @@
 		"spaintr_properties_PauseAzCapacityState_parameters_capacity": {
 			"type": "string",
 			"defaultValue": "spcfabricpaakos01"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_subscription": {
+			"type": "string",
+			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"type": "string",
+			"defaultValue": "swedfabricrg01"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_capacity": {
+			"type": "string",
+			"defaultValue": "swedcefabric01"
 		},
 		"wetri_properties_PauseAzCapacityState_parameters_subscription": {
 			"type": "string",
@@ -112,14 +124,14 @@
 					"AzureSynapseAnalytics1_properties_typeProperties_userName": {
 						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_userName')]"
 					},
-					"swedenInstance_properties_PauseAzCapacityState_parameters_subscription": {
-						"value": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_subscription')]"
+					"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_subscription": {
+						"value": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_subscription')]"
 					},
-					"swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup": {
-						"value": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup')]"
+					"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_resourcegroup": {
+						"value": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_resourcegroup')]"
 					},
-					"swedenInstance_properties_PauseAzCapacityState_parameters_capacity": {
-						"value": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_capacity')]"
+					"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_capacity": {
+						"value": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_capacity')]"
 					},
 					"spaintr_properties_PauseAzCapacityState_parameters_subscription": {
 						"value": "[parameters('spaintr_properties_PauseAzCapacityState_parameters_subscription')]"
@@ -129,6 +141,15 @@
 					},
 					"spaintr_properties_PauseAzCapacityState_parameters_capacity": {
 						"value": "[parameters('spaintr_properties_PauseAzCapacityState_parameters_capacity')]"
+					},
+					"swedenInstance_properties_PauseAzCapacityState_parameters_subscription": {
+						"value": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_subscription')]"
+					},
+					"swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup": {
+						"value": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup')]"
+					},
+					"swedenInstance_properties_PauseAzCapacityState_parameters_capacity": {
+						"value": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_capacity')]"
 					},
 					"wetri_properties_PauseAzCapacityState_parameters_subscription": {
 						"value": "[parameters('wetri_properties_PauseAzCapacityState_parameters_subscription')]"

@@ -31,17 +31,17 @@
 			"type": "string",
 			"defaultValue": "sqladminuser"
 		},
-		"swedenInstance_properties_PauseAzCapacityState_parameters_subscription": {
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_subscription": {
 			"type": "string",
 			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
 		},
-		"swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup": {
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_resourcegroup": {
 			"type": "string",
-			"defaultValue": "swedfabricrg01"
+			"defaultValue": "fabriccapacitywestus2"
 		},
-		"swedenInstance_properties_PauseAzCapacityState_parameters_capacity": {
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_capacity": {
 			"type": "string",
-			"defaultValue": "swedcefabric01"
+			"defaultValue": "westus2fabriccapacity"
 		},
 		"spaintr_properties_PauseAzCapacityState_parameters_subscription": {
 			"type": "string",
@@ -54,6 +54,18 @@
 		"spaintr_properties_PauseAzCapacityState_parameters_capacity": {
 			"type": "string",
 			"defaultValue": "spcfabricpaakos01"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_subscription": {
+			"type": "string",
+			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"type": "string",
+			"defaultValue": "swedfabricrg01"
+		},
+		"swedenInstance_properties_PauseAzCapacityState_parameters_capacity": {
+			"type": "string",
+			"defaultValue": "swedcefabric01"
 		},
 		"wetri_properties_PauseAzCapacityState_parameters_subscription": {
 			"type": "string",
@@ -1223,7 +1235,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/daily')]",
+			"name": "[concat(parameters('factoryName'), '/westus2fabriccapacity')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1236,7 +1248,11 @@
 							"referenceName": "PauseAzCapacityState",
 							"type": "PipelineReference"
 						},
-						"parameters": {}
+						"parameters": {
+							"subscription": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_subscription')]",
+							"resourcegroup": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_resourcegroup')]",
+							"capacity": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_capacity')]"
+						}
 					}
 				],
 				"type": "ScheduleTrigger",
@@ -1245,58 +1261,6 @@
 						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2024-06-24T14:12:00",
-						"timeZone": "Romance Standard Time",
-						"schedule": {
-							"minutes": [
-								30
-							],
-							"hours": [
-								18
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PauseAzCapacityState')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/azureshir4oracle')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/swedenInstance')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "PauseAzCapacityState",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"subscription": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_subscription')]",
-							"resourcegroup": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup')]",
-							"capacity": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_capacity')]"
-						}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2025-01-28T09:42:00",
 						"timeZone": "Romance Standard Time",
 						"schedule": {
 							"minutes": [
@@ -1356,6 +1320,48 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/swedenInstance')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PauseAzCapacityState",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"subscription": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_subscription')]",
+							"resourcegroup": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_resourcegroup')]",
+							"capacity": "[parameters('swedenInstance_properties_PauseAzCapacityState_parameters_capacity')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2025-01-28T09:42:00",
+						"timeZone": "Romance Standard Time",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								18
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PauseAzCapacityState')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/wetri')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -1396,6 +1402,16 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/PauseAzCapacityState')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/azureshir4oracle')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
 		}
 	]
 }
