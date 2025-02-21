@@ -1,5 +1,5 @@
 {
-	"name": "daily",
+	"name": "westus2fabriccapacity",
 	"properties": {
 		"description": "include params",
 		"annotations": [],
@@ -9,6 +9,11 @@
 				"pipelineReference": {
 					"referenceName": "PauseAzCapacityState",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"subscription": "cbb0b01f-f99e-4890-891a-c1dccc5563e8",
+					"resourcegroup": "fabriccapacitywestus2",
+					"capacity": "westus2fabriccapacity"
 				}
 			}
 		],
