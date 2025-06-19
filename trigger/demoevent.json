@@ -1,0 +1,37 @@
+{
+	"name": "demoevent",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PauseAzCapacityState",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"subscription": "cbb0b01f-f99e-4890-891a-c1dccc5563e8",
+					"resourcegroup": "rg-fab-cli",
+					"capacity": "demoevent"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2025-06-19T15:25:00",
+				"timeZone": "Romance Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						18
+					]
+				}
+			}
+		}
+	}
+}
