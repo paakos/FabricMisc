@@ -31,18 +31,6 @@
 			"type": "string",
 			"defaultValue": "sqladminuser"
 		},
-		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_subscription": {
-			"type": "string",
-			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
-		},
-		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_resourcegroup": {
-			"type": "string",
-			"defaultValue": "fabriccapacitywestus2"
-		},
-		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_capacity": {
-			"type": "string",
-			"defaultValue": "westus2fabriccapacity"
-		},
 		"spaintr_properties_PauseAzCapacityState_parameters_subscription": {
 			"type": "string",
 			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
@@ -67,6 +55,18 @@
 			"type": "string",
 			"defaultValue": "swedcefabric01"
 		},
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_subscription": {
+			"type": "string",
+			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+		},
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"type": "string",
+			"defaultValue": "fabriccapacitywestus2"
+		},
+		"westus2fabriccapacity_properties_PauseAzCapacityState_parameters_capacity": {
+			"type": "string",
+			"defaultValue": "westus2fabriccapacity"
+		},
 		"wetri_properties_PauseAzCapacityState_parameters_subscription": {
 			"type": "string",
 			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
@@ -78,6 +78,18 @@
 		"wetri_properties_PauseAzCapacityState_parameters_capacity": {
 			"type": "string",
 			"defaultValue": "wefabricpaakos01"
+		},
+		"demoevent_properties_PauseAzCapacityState_parameters_subscription": {
+			"type": "string",
+			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+		},
+		"demoevent_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"type": "string",
+			"defaultValue": "rg-fab-cli"
+		},
+		"demoevent_properties_PauseAzCapacityState_parameters_capacity": {
+			"type": "string",
+			"defaultValue": "demoevent"
 		}
 	},
 	"variables": {
@@ -948,49 +960,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/westus2fabriccapacity')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "include params",
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "PauseAzCapacityState",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"subscription": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_subscription')]",
-							"resourcegroup": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_resourcegroup')]",
-							"capacity": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_capacity')]"
-						}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2024-06-24T14:12:00",
-						"timeZone": "Romance Standard Time",
-						"schedule": {
-							"minutes": [
-								30
-							],
-							"hours": [
-								18
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PauseAzCapacityState')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/spaintr')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -1075,6 +1044,49 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/westus2fabriccapacity')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "include params",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PauseAzCapacityState",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"subscription": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_subscription')]",
+							"resourcegroup": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_resourcegroup')]",
+							"capacity": "[parameters('westus2fabriccapacity_properties_PauseAzCapacityState_parameters_capacity')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2024-06-24T14:12:00",
+						"timeZone": "Romance Standard Time",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								18
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PauseAzCapacityState')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/wetri')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -1100,6 +1112,48 @@
 						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2025-01-28T09:46:00",
+						"timeZone": "Romance Standard Time",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								18
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PauseAzCapacityState')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/demoevent')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PauseAzCapacityState",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"subscription": "[parameters('demoevent_properties_PauseAzCapacityState_parameters_subscription')]",
+							"resourcegroup": "[parameters('demoevent_properties_PauseAzCapacityState_parameters_resourcegroup')]",
+							"capacity": "[parameters('demoevent_properties_PauseAzCapacityState_parameters_capacity')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2025-06-19T15:25:00",
 						"timeZone": "Romance Standard Time",
 						"schedule": {
 							"minutes": [
