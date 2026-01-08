@@ -1,0 +1,41 @@
+{
+	"name": "Listallcapacitiesintenant",
+	"properties": {
+		"activities": [
+			{
+				"name": "getcapacities",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/providers/Microsoft.Fabric/capacities?api-version=2023-11-01",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://management.azure.com"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"subscription": {
+				"type": "string",
+				"defaultValue": "9c655958-f8a7-4cb4-975d-2e65bfab228e"
+			}
+		},
+		"folder": {
+			"name": "ManageAzCapacityFabric"
+		},
+		"annotations": []
+	}
+}
