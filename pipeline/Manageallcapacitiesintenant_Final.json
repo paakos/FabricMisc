@@ -1,5 +1,5 @@
 {
-	"name": "Manageallcapacitiesintenant_copy1",
+	"name": "Manageallcapacitiesintenant_Final",
 	"properties": {
 		"description": "This pipeline allows the list of all capacities in the subscription and can turn off  al the capacities in resumed state ",
 		"activities": [
