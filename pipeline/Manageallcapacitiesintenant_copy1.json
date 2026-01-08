@@ -1,0 +1,136 @@
+{
+	"name": "Manageallcapacitiesintenant_copy1",
+	"properties": {
+		"description": "This pipeline allows the list of all capacities in the subscription and can turn off  al the capacities in resumed state ",
+		"activities": [
+			{
+				"name": "getcapacities",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "https://management.azure.com/subscriptions/@{pipeline().parameters.subscription}/providers/Microsoft.Fabric/capacities?api-version=2023-11-01",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://management.azure.com"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"description": "@equals(@item().properties.state.value,,'Active')",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "getcapacities",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('getcapacities').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(item().properties.state,'Active')",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "pausecapacityes",
+										"type": "WebActivity",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"method": "POST",
+											"url": {
+												"value": "@concat('https://management.azure.com/subscriptions/',item().id,'/suspend?api-version=2022-07-01-preview')",
+												"type": "Expression"
+											},
+											"body": {
+												"value": "{\"Pausing\":\"Capacity\"}",
+												"type": "Expression"
+											},
+											"authentication": {
+												"type": "MSI",
+												"resource": "https://management.azure.com"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"subscription": {
+				"type": "string",
+				"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+			},
+			"capacityname": {
+				"type": "string",
+				"defaultValue": "empty"
+			},
+			"resourcegroup": {
+				"type": "string",
+				"defaultValue": "empty"
+			},
+			"state": {
+				"type": "string",
+				"defaultValue": "empty"
+			}
+		},
+		"variables": {
+			"capacityname": {
+				"type": "String",
+				"defaultValue": "[\"emptyarray\",\"\"]"
+			},
+			"rgname": {
+				"type": "String",
+				"defaultValue": "[\"Emptyregionname\"]"
+			},
+			"state": {
+				"type": "String",
+				"defaultValue": "[\"Emptystate\"]"
+			}
+		},
+		"folder": {
+			"name": "ManageAzCapacityFabric"
+		},
+		"annotations": [
+			"Security:  Uses Managed Identity at subscription scope add the ADF SMI  to administrators of the capacity",
+			"owner: Pablo Ahumada"
+		]
+	}
+}
