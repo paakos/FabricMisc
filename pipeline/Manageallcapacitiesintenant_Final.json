@@ -73,7 +73,7 @@
 										"typeProperties": {
 											"method": "POST",
 											"url": {
-												"value": "@concat('https://management.azure.com/subscriptions/',item().id,'/suspend?api-version=2022-07-01-preview')",
+												"value": "@concat('https://management.azure.com/',item().id,'/suspend?api-version=2022-07-01-preview')",
 												"type": "Expression"
 											},
 											"body": {
@@ -129,9 +129,10 @@
 			"name": "ManageAzCapacityFabric"
 		},
 		"annotations": [
-			"Security:  Uses Managed Identity at subscription scope add the ADF SMI  to administrators of the capacity",
+			"Security: Old way-->  Uses Managed Identity at subscription scope add the ADF SMI  to administrators of the capacity",
 			"owner: Pablo Ahumada",
-			"Version: NonDebugversion"
+			"Version: NonDebugversion",
+			"Security: new way , add the SMI to contributor RBAC role in IAM"
 		]
 	}
 }
