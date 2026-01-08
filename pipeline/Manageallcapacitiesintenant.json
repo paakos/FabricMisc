@@ -1,6 +1,7 @@
 {
-	"name": "Listallcapacitiesintenant",
+	"name": "Manageallcapacitiesintenant",
 	"properties": {
+		"description": "This pipeline allows the list of all capacities in the subscription and can turn off  al the capacities in resumed state ",
 		"activities": [
 			{
 				"name": "getcapacities",
@@ -199,6 +200,9 @@
 		"folder": {
 			"name": "ManageAzCapacityFabric"
 		},
-		"annotations": []
+		"annotations": [
+			"Security",
+			"owner"
+		]
 	}
 }
