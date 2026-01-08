@@ -201,8 +201,8 @@
 			"name": "ManageAzCapacityFabric"
 		},
 		"annotations": [
-			"Security",
-			"owner"
+			"Security:  Uses Managed Identity at subscription scope add the ADF SMI  to administrators of the capacity",
+			"owner: Pablo Ahumada"
 		]
 	}
 }
