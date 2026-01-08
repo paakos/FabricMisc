@@ -25,12 +25,175 @@
 						"resource": "https://management.azure.com"
 					}
 				}
+			},
+			{
+				"name": "ForEach1",
+				"description": "@equals(@item().properties.state.value,,'Active')",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "getcapacities",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('getcapacities').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "SetName",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "capacityname",
+								"value": {
+									"value": "@item().name",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Setrgname",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "SetName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "rgname",
+								"value": {
+									"value": "@split(item().id,'/')[4]",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "SetState",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Setrgname",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "state",
+								"value": {
+									"value": "@item().properties.state",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "SetState",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(item().properties.state,'Active')",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "pausecapacityes",
+										"type": "WebActivity",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"method": "POST",
+											"url": {
+												"value": "@concat('https://management.azure.com/subscriptions/', pipeline().parameters.subscription,'/resourceGroups/',variables('rgname') , '/providers/Microsoft.Fabric/capacities/', item().name, '/suspend?api-version=2022-07-01-preview')",
+												"type": "Expression"
+											},
+											"body": {
+												"value": "{\"Starting\":\"Capacity\"}",
+												"type": "Expression"
+											},
+											"authentication": {
+												"type": "MSI",
+												"resource": "https://management.azure.com"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
 			"subscription": {
 				"type": "string",
-				"defaultValue": "9c655958-f8a7-4cb4-975d-2e65bfab228e"
+				"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+			},
+			"capacityname": {
+				"type": "string",
+				"defaultValue": "empty"
+			},
+			"resourcegroup": {
+				"type": "string",
+				"defaultValue": "empty"
+			},
+			"state": {
+				"type": "string",
+				"defaultValue": "empty"
+			}
+		},
+		"variables": {
+			"capacityname": {
+				"type": "String",
+				"defaultValue": "[\"emptyarray\",\"\"]"
+			},
+			"rgname": {
+				"type": "String",
+				"defaultValue": "[\"Emptyregionname\"]"
+			},
+			"state": {
+				"type": "String",
+				"defaultValue": "[\"Emptystate\"]"
 			}
 		},
 		"folder": {
