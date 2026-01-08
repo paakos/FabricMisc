@@ -31,6 +31,18 @@
 			"type": "string",
 			"defaultValue": "sqladminuser"
 		},
+		"demoevent_properties_PauseAzCapacityState_parameters_subscription": {
+			"type": "string",
+			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+		},
+		"demoevent_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"type": "string",
+			"defaultValue": "rg-fab-cli"
+		},
+		"demoevent_properties_PauseAzCapacityState_parameters_capacity": {
+			"type": "string",
+			"defaultValue": "demoevent"
+		},
 		"spaintr_properties_PauseAzCapacityState_parameters_subscription": {
 			"type": "string",
 			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
@@ -79,18 +91,6 @@
 			"type": "string",
 			"defaultValue": "wefabricpaakos01"
 		},
-		"demoevent_properties_PauseAzCapacityState_parameters_subscription": {
-			"type": "string",
-			"defaultValue": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
-		},
-		"demoevent_properties_PauseAzCapacityState_parameters_resourcegroup": {
-			"type": "string",
-			"defaultValue": "rg-fab-cli"
-		},
-		"demoevent_properties_PauseAzCapacityState_parameters_capacity": {
-			"type": "string",
-			"defaultValue": "demoevent"
-		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -136,6 +136,15 @@
 					"AzureSynapseAnalytics1_properties_typeProperties_userName": {
 						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_userName')]"
 					},
+					"demoevent_properties_PauseAzCapacityState_parameters_subscription": {
+						"value": "[parameters('demoevent_properties_PauseAzCapacityState_parameters_subscription')]"
+					},
+					"demoevent_properties_PauseAzCapacityState_parameters_resourcegroup": {
+						"value": "[parameters('demoevent_properties_PauseAzCapacityState_parameters_resourcegroup')]"
+					},
+					"demoevent_properties_PauseAzCapacityState_parameters_capacity": {
+						"value": "[parameters('demoevent_properties_PauseAzCapacityState_parameters_capacity')]"
+					},
 					"spaintr_properties_PauseAzCapacityState_parameters_subscription": {
 						"value": "[parameters('spaintr_properties_PauseAzCapacityState_parameters_subscription')]"
 					},
@@ -171,15 +180,6 @@
 					},
 					"wetri_properties_PauseAzCapacityState_parameters_capacity": {
 						"value": "[parameters('wetri_properties_PauseAzCapacityState_parameters_capacity')]"
-					},
-					"demoevent_properties_PauseAzCapacityState_parameters_subscription": {
-						"value": "[parameters('demoevent_properties_PauseAzCapacityState_parameters_subscription')]"
-					},
-					"demoevent_properties_PauseAzCapacityState_parameters_resourcegroup": {
-						"value": "[parameters('demoevent_properties_PauseAzCapacityState_parameters_resourcegroup')]"
-					},
-					"demoevent_properties_PauseAzCapacityState_parameters_capacity": {
-						"value": "[parameters('demoevent_properties_PauseAzCapacityState_parameters_capacity')]"
 					}
 				}
 			},

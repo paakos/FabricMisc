@@ -23,6 +23,15 @@
 		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
 			"value": "sqladminuser"
 		},
+		"demoevent_properties_PauseAzCapacityState_parameters_subscription": {
+			"value": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
+		},
+		"demoevent_properties_PauseAzCapacityState_parameters_resourcegroup": {
+			"value": "rg-fab-cli"
+		},
+		"demoevent_properties_PauseAzCapacityState_parameters_capacity": {
+			"value": "demoevent"
+		},
 		"spaintr_properties_PauseAzCapacityState_parameters_subscription": {
 			"value": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
 		},
@@ -58,15 +67,6 @@
 		},
 		"wetri_properties_PauseAzCapacityState_parameters_capacity": {
 			"value": "wefabricpaakos01"
-		},
-		"demoevent_properties_PauseAzCapacityState_parameters_subscription": {
-			"value": "cbb0b01f-f99e-4890-891a-c1dccc5563e8"
-		},
-		"demoevent_properties_PauseAzCapacityState_parameters_resourcegroup": {
-			"value": "rg-fab-cli"
-		},
-		"demoevent_properties_PauseAzCapacityState_parameters_capacity": {
-			"value": "demoevent"
 		},
 		"containerUri": {
 			"value": ""
